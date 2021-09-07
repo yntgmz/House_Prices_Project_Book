@@ -50,6 +50,12 @@
 
 
 
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.6.1/grViz.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -209,7 +215,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Which are the most relevant features that impact sales price?</li>
 </ol>
 <p>Based on the best performing model, the following features are the top 20 predictors of SalesPrice for the given data.</p>
-<p><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p><a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
 <p>The most important features for the XGB model were Total Area, Overall Quality, Neighborhood Category, Total Baths and Overall Score. Also, Fireplace Quality, Lot Area, Exterior Quality, GarageCars, Garage Finish, Garage Grade and Central Air had significant impact on sales price.</p>
 <p>So, what does this mean?</p>
 <p>For example, Central Air seems to be an important predictor of price, so if you are a buyer you could consider getting a house without central and installing it yourself after the purchase. On the other hand if you were a seller do the opposite to fetch a better sale price. The basement finish quality seems to be important, so you could consider saving by getting an unfinished basement if you were a buyer, and finish the basement if you were a seller. Also the fire place quality had significant impact on price, so as a buyer maybe consider a fireplace that needs some work, while as a seller fix up the fire place before selling, and the same goes for the quality of the garage.</p>
@@ -229,8 +235,8 @@ Data Cleaning, data engineering, near zero variance filtering, normalizing the r
 The XGBoost model with feature selection performed better at predicting price than the regularized regression models.</li>
 </ol>
 <p>Finally, in the quest for a better score in this addictive Kaggle competition, I tried something I had read other competitors were doing to improve their scores. They say, that if you average the top performing model’s predictions, you can get a better prediction score on Kaggle.com’s competitions. I tried it, by averaging the predictions from the XGB, Elastic Net, Lasso and GBM models, and it worked. This trick got me into the top 19%, with an RMSE score of 0.12595.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">stacking &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;ID&quot;</span>=test_ID,<span class="st">&quot;SalePrice&quot;</span>=(predictions_XGB_fs<span class="op">+</span>pred_net_test_final<span class="op">+</span>pred_lasso_test_final)<span class="op">/</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">head</span>(stacking)</a></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1">stacking &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;ID&quot;</span>=test_ID,<span class="st">&quot;SalePrice&quot;</span>=(predictions_XGB_fs<span class="op">+</span>pred_net_test_final<span class="op">+</span>pred_lasso_test_final)<span class="op">/</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb105-2" data-line-number="2"><span class="kw">head</span>(stacking)</a></code></pre></div>
 <pre><code>##     ID SalePrice
 ## 1 1461  116895.9
 ## 2 1462  159452.0
@@ -238,7 +244,7 @@ The XGBoost model with feature selection performed better at predicting price th
 ## 4 1464  193112.0
 ## 5 1465  191038.5
 ## 6 1466  170291.2</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">write.csv</span>(stacking , <span class="st">&quot;stacked_fs_outl&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>) <span class="co">#KAGGLE RMSE: 0.12592</span></a></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1"><span class="kw">write.csv</span>(stacking , <span class="st">&quot;stacked_fs_outl&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>) <span class="co">#KAGGLE RMSE: 0.12592</span></a></code></pre></div>
 </div>
 <div id="future-work" class="section level2">
 <h2><span class="header-section-number">7.2</span> Future Work</h2>
@@ -247,8 +253,8 @@ The XGBoost model with feature selection performed better at predicting price th
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>The plot was produced with the package ‘vip’ <span class="citation">(Greenwell and Boehmke <a href="#ref-vip">2020</a>)</span>.<a href="conclusion.html#fnref1" class="footnote-back">↩</a></p></li>
+<ol start="11">
+<li id="fn11"><p>The plot was produced with the package ‘vip’ <span class="citation">(Greenwell and Boehmke <a href="#ref-vip">2020</a>)</span>.<a href="conclusion.html#fnref11" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>

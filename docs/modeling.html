@@ -50,6 +50,12 @@
 
 
 
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.6.1/grViz.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -179,6 +185,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#answer-to-research-questions"><i class="fa fa-check"></i><b>7.1</b> Answer to Research Questions</a></li>
 <li class="chapter" data-level="7.2" data-path="conclusion.html"><a href="conclusion.html#future-work"><i class="fa fa-check"></i><b>7.2</b> Future Work</a></li>
 </ul></li>
+<li class="chapter" data-level="8" data-path="bibliography.html"><a href="bibliography.html"><i class="fa fa-check"></i><b>8</b> Bibliography</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -220,26 +227,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5         4       FR2         1       Norm       Norm     1Fam
 ## 6         4    Inside         1       Norm       Norm     1Fam</code></pre>
 <p><strong>Dummy Codding: One of the last pre-processing steps before modeling</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#Convert Categorical Features to numeric with dummy codding using function dummyVars() from Caret package.</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">factor_var &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">lapply</span>(ames_clean, class) <span class="op">==</span><span class="st"> &quot;factor&quot;</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">data_temp&lt;-ames_clean</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">dummy&lt;-<span class="st"> </span><span class="kw">dummyVars</span>(<span class="st">&quot; ~ MSSubClass + MSZoning +Street + Alley+ LotShape + LandContour+ LotConfig + Condition1 + Condition2 + BldgType + HouseStyle + RoofStyle + RoofMatl+ Heating + Exterior1st + Exterior2nd + MasVnrType + Foundation + GarageType + SaleType + SaleCondition + MiscFeature&quot;</span> , <span class="dt">data =</span> data_temp, <span class="dt">fullRank =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">pred&lt;-<span class="st"> </span><span class="kw">data.frame</span> (<span class="kw">predict</span>(dummy, data_temp))</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">data_final&lt;-<span class="kw">cbind</span>(ames_clean[,<span class="op">-</span>factor_var], pred)</a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1"><span class="co">#Convert Categorical Features to numeric with dummy codding using function dummyVars() from Caret package.</span></a>
+<a class="sourceLine" id="cb65-2" data-line-number="2">factor_var &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">lapply</span>(ames_clean, class) <span class="op">==</span><span class="st"> &quot;factor&quot;</span>)</a>
+<a class="sourceLine" id="cb65-3" data-line-number="3">data_temp&lt;-ames_clean</a>
+<a class="sourceLine" id="cb65-4" data-line-number="4">dummy&lt;-<span class="st"> </span><span class="kw">dummyVars</span>(<span class="st">&quot; ~ MSSubClass + MSZoning +Street + Alley+ LotShape + LandContour+ LotConfig + Condition1 + Condition2 + BldgType + HouseStyle + RoofStyle + RoofMatl+ Heating + Exterior1st + Exterior2nd + MasVnrType + Foundation + GarageType + SaleType + SaleCondition + MiscFeature&quot;</span> , <span class="dt">data =</span> data_temp, <span class="dt">fullRank =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb65-5" data-line-number="5">pred&lt;-<span class="st"> </span><span class="kw">data.frame</span> (<span class="kw">predict</span>(dummy, data_temp))</a>
+<a class="sourceLine" id="cb65-6" data-line-number="6">data_final&lt;-<span class="kw">cbind</span>(ames_clean[,<span class="op">-</span>factor_var], pred)</a></code></pre></div>
 <p><strong>Split pre-processed dataset into Train and Test sets for modeling</strong>*</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">train_<span class="dv">1</span>&lt;-data_final[<span class="dv">1</span><span class="op">:</span><span class="dv">1456</span>,<span class="op">-</span><span class="dv">1</span>] </a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">train_x&lt;-<span class="kw">select</span>(train_<span class="dv">1</span>, <span class="op">-</span>SalePrice)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">train_y&lt;-train_<span class="dv">1</span><span class="op">$</span>SalePrice</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">test_<span class="dv">1</span>&lt;-data_final[<span class="dv">1457</span><span class="op">:</span><span class="dv">2915</span>,<span class="op">-</span><span class="dv">1</span>] </a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">test_<span class="dv">1</span>&lt;-<span class="kw">select</span>(test_<span class="dv">1</span>, <span class="op">-</span>SalePrice)</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">train_<span class="dv">1</span><span class="op">$</span>SalePrice&lt;-<span class="st"> </span><span class="kw">log</span>(train_<span class="dv">1</span><span class="op">$</span>SalePrice)</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">test_ID&lt;-data_final[<span class="dv">1457</span><span class="op">:</span><span class="dv">2915</span>,<span class="dv">1</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1">train_<span class="dv">1</span>&lt;-data_final[<span class="dv">1</span><span class="op">:</span><span class="dv">1456</span>,<span class="op">-</span><span class="dv">1</span>] </a>
+<a class="sourceLine" id="cb66-2" data-line-number="2">train_x&lt;-<span class="kw">select</span>(train_<span class="dv">1</span>, <span class="op">-</span>SalePrice)</a>
+<a class="sourceLine" id="cb66-3" data-line-number="3">train_y&lt;-train_<span class="dv">1</span><span class="op">$</span>SalePrice</a>
+<a class="sourceLine" id="cb66-4" data-line-number="4">test_<span class="dv">1</span>&lt;-data_final[<span class="dv">1457</span><span class="op">:</span><span class="dv">2915</span>,<span class="op">-</span><span class="dv">1</span>] </a>
+<a class="sourceLine" id="cb66-5" data-line-number="5">test_<span class="dv">1</span>&lt;-<span class="kw">select</span>(test_<span class="dv">1</span>, <span class="op">-</span>SalePrice)</a>
+<a class="sourceLine" id="cb66-6" data-line-number="6">train_<span class="dv">1</span><span class="op">$</span>SalePrice&lt;-<span class="st"> </span><span class="kw">log</span>(train_<span class="dv">1</span><span class="op">$</span>SalePrice)</a>
+<a class="sourceLine" id="cb66-7" data-line-number="7">test_ID&lt;-data_final[<span class="dv">1457</span><span class="op">:</span><span class="dv">2915</span>,<span class="dv">1</span>]</a></code></pre></div>
 <div id="multivariate-linear-regression-model" class="section level2">
 <h2><span class="header-section-number">5.1</span> Multivariate Linear Regression Model</h2>
 <p>We start by fitting a multivariate linear regression model to illustrate the issue of multicollinearity present in our data. The model returns a warning: “Coefficients: (4 not defined because of singularities)”. This is due to variables that have perfect multicollinearity, so we find those variables and remove them.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co">#Fit Linear Model</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">ml_model&lt;-<span class="st"> </span><span class="kw">lm</span>(SalePrice <span class="op">~</span><span class="st"> </span>., train_<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw">summary</span>(ml_model)</a></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1"><span class="co">#Fit Linear Model</span></a>
+<a class="sourceLine" id="cb67-2" data-line-number="2">ml_model&lt;-<span class="st"> </span><span class="kw">lm</span>(SalePrice <span class="op">~</span><span class="st"> </span>., train_<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb67-3" data-line-number="3"><span class="kw">summary</span>(ml_model)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = SalePrice ~ ., data = train_1)
@@ -421,15 +428,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Residual standard error: 0.1062 on 1295 degrees of freedom
 ## Multiple R-squared:  0.936,  Adjusted R-squared:  0.9281 
 ## F-statistic: 118.4 on 160 and 1295 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#identify the linearly dependent variables</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">ld_vars &lt;-<span class="st"> </span><span class="kw">attributes</span>(<span class="kw">alias</span>(ml_model)<span class="op">$</span>Complete)<span class="op">$</span>dimnames[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#remove the linearly dependent variables variables</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">train_ld&lt;-<span class="kw">select</span>(train_<span class="dv">1</span>, <span class="op">-</span><span class="kw">all_of</span>(ld_vars))</a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="co">#identify the linearly dependent variables</span></a>
+<a class="sourceLine" id="cb69-2" data-line-number="2">ld_vars &lt;-<span class="st"> </span><span class="kw">attributes</span>(<span class="kw">alias</span>(ml_model)<span class="op">$</span>Complete)<span class="op">$</span>dimnames[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb69-3" data-line-number="3"><span class="co">#remove the linearly dependent variables variables</span></a>
+<a class="sourceLine" id="cb69-4" data-line-number="4">train_ld&lt;-<span class="kw">select</span>(train_<span class="dv">1</span>, <span class="op">-</span><span class="kw">all_of</span>(ld_vars))</a></code></pre></div>
 <p>Then, we fit the model again, and take a closer look at the the Variance Inflation Factors (VIFs), which measure extent to which a predictor is correlated with the other predictor variables. As we can see in the output, we find high levels of multicollinearity with VIF values greater than 10 in many cases. Ideally, we would like to keep the VIF values below 5.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">#run model again</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">ml_model_new &lt;-<span class="kw">lm</span>(SalePrice <span class="op">~</span><span class="st"> </span>., train_ld)</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1"><span class="co">#run model again</span></a>
+<a class="sourceLine" id="cb70-2" data-line-number="2">ml_model_new &lt;-<span class="kw">lm</span>(SalePrice <span class="op">~</span><span class="st"> </span>., train_ld)</a></code></pre></div>
 <p><strong>Inspect the Variance Inflation Factors</strong></p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">vif</span>(ml_model_new)</a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="kw">vif</span>(ml_model_new)</a></code></pre></div>
 <pre><code>##            MSSubClass           LotFrontage               LotArea 
 ##             30.983647              2.470684              2.125854 
 ##             Utilities             LandSlope           OverallQual 
@@ -594,23 +601,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">5.3.1</span> Identify the Optimal Lambda Parameter</h3>
 <p>To identify the optimal lambda value we used 10-fold cross-validation (CV) with cv.glmnet() from the glmnet package <span class="citation">(Friedman, Hastie, and Tibshirani <a href="#ref-glmnet">2010</a>)</span>. We selected the minimum lambda value as the metric to determine the optimal lambda value.</p>
 <p>The figures show the 10-fold CV MSE across all the log lamda values. The numbers across the top of the plot are the number of features in the model. The first dashed line represents the log lamda value with the minimum MSE, and the second is the largest log lamda value within one standard error of it.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">train_x2&lt;-<span class="kw">select</span>(train_x, <span class="op">-</span>SalePrice)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">test_x2&lt;-<span class="kw">select</span>(test_x, <span class="op">-</span>SalePrice)</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">train_y&lt;-<span class="st"> </span><span class="kw">log</span>(train_final<span class="op">$</span>SalePrice)</a></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1">train_x2&lt;-<span class="kw">select</span>(train_x, <span class="op">-</span>SalePrice)</a>
+<a class="sourceLine" id="cb73-2" data-line-number="2">test_x2&lt;-<span class="kw">select</span>(test_x, <span class="op">-</span>SalePrice)</a>
+<a class="sourceLine" id="cb73-3" data-line-number="3">train_y&lt;-<span class="st"> </span><span class="kw">log</span>(train_final<span class="op">$</span>SalePrice)</a></code></pre></div>
 <p><strong>Ridge Model</strong>*</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">glm_cv_ridge &lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(<span class="kw">as.matrix</span>(train_x2), train_y, <span class="dt">alpha =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">glm_cv_ridge</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">## </span></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">## Call:  cv.glmnet(x = as.matrix(train_x2), y = train_y, alpha = 0) </span></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">## </span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">## Measure: Mean-Squared Error </span></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">## </span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">##      Lambda Index Measure        SE Nonzero</span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">## min 0.03246   100 0.01352 0.0009632      75</span></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="co">## 1se 0.17325    82 0.01445 0.0010423      75</span></a>
-<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="kw">plot</span>(glm_cv_ridge)</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb74-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb74-3" data-line-number="3">glm_cv_ridge &lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(<span class="kw">as.matrix</span>(train_x2), train_y, <span class="dt">alpha =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb74-4" data-line-number="4">glm_cv_ridge</a>
+<a class="sourceLine" id="cb74-5" data-line-number="5"><span class="co">## </span></a>
+<a class="sourceLine" id="cb74-6" data-line-number="6"><span class="co">## Call:  cv.glmnet(x = as.matrix(train_x2), y = train_y, alpha = 0) </span></a>
+<a class="sourceLine" id="cb74-7" data-line-number="7"><span class="co">## </span></a>
+<a class="sourceLine" id="cb74-8" data-line-number="8"><span class="co">## Measure: Mean-Squared Error </span></a>
+<a class="sourceLine" id="cb74-9" data-line-number="9"><span class="co">## </span></a>
+<a class="sourceLine" id="cb74-10" data-line-number="10"><span class="co">##      Lambda Index Measure        SE Nonzero</span></a>
+<a class="sourceLine" id="cb74-11" data-line-number="11"><span class="co">## min 0.03246   100 0.01352 0.0009632      75</span></a>
+<a class="sourceLine" id="cb74-12" data-line-number="12"><span class="co">## 1se 0.17325    82 0.01445 0.0010423      75</span></a>
+<a class="sourceLine" id="cb74-13" data-line-number="13"><span class="kw">plot</span>(glm_cv_ridge)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:RidgeFit"></span>
 <img src="House_Prices_Project_files/figure-html/RidgeFit-1.png" alt="Ridge Optimal Lamda" width="672" />
 <p class="caption">
@@ -620,9 +627,9 @@ Figure 5.1: Ridge Optimal Lamda
 <pre><code>## The optimal lambda value selected for the ridge model is:  0.03246428</code></pre>
 <pre><code>## And the ridge model retains all features, that is 75 features in total.</code></pre>
 <p><strong>Lasso Model</strong>*</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">glm_cv_lasso &lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(<span class="kw">as.matrix</span>(train_x2), train_y, <span class="dt">alpha =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">glm_cv_lasso</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb77-2" data-line-number="2">glm_cv_lasso &lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(<span class="kw">as.matrix</span>(train_x2), train_y, <span class="dt">alpha =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb77-3" data-line-number="3">glm_cv_lasso</a></code></pre></div>
 <pre><code>## 
 ## Call:  cv.glmnet(x = as.matrix(train_x2), y = train_y, alpha = 1) 
 ## 
@@ -631,7 +638,7 @@ Figure 5.1: Ridge Optimal Lamda
 ##       Lambda Index Measure        SE Nonzero
 ## min 0.001222    61 0.01346 0.0009675      51
 ## 1se 0.007857    41 0.01429 0.0011390      33</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw">plot</span>(glm_cv_lasso)</a></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1"><span class="kw">plot</span>(glm_cv_lasso)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:LassoFit"></span>
 <img src="House_Prices_Project_files/figure-html/LassoFit-1.png" alt="Lasso Optimal Lamda" width="672" />
 <p class="caption">
@@ -641,9 +648,9 @@ Figure 5.2: Lasso Optimal Lamda
 <pre><code>## The optimal lambda value selected for the lasso model is: 0.001222259</code></pre>
 <pre><code>## And the number of features to be retained is: 51</code></pre>
 <p><strong>Elastic Net Model </strong>*</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb20-2" data-line-number="2">glm_cv_net&lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(<span class="kw">data.matrix</span>(train_x2), train_y, <span class="dt">alpha =</span> <span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb20-3" data-line-number="3">glm_cv_net</a></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb82-2" data-line-number="2">glm_cv_net&lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(<span class="kw">data.matrix</span>(train_x2), train_y, <span class="dt">alpha =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb82-3" data-line-number="3">glm_cv_net</a></code></pre></div>
 <pre><code>## 
 ## Call:  cv.glmnet(x = data.matrix(train_x2), y = train_y, alpha = 0.1) 
 ## 
@@ -652,7 +659,7 @@ Figure 5.2: Lasso Optimal Lamda
 ##      Lambda Index Measure       SE Nonzero
 ## min 0.01114    62 0.01342 0.000971      55
 ## 1se 0.06523    43 0.01426 0.001123      44</code></pre>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">plot</span>(glm_cv_net)</a></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" data-line-number="1"><span class="kw">plot</span>(glm_cv_net)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:modelfitnet"></span>
 <img src="House_Prices_Project_files/figure-html/modelfitnet-1.png" alt="Elastic Net Optimal Lamda" width="672" />
 <p class="caption">
@@ -665,39 +672,39 @@ Figure 5.3: Elastic Net Optimal Lamda
 </div>
 <div id="training-the-regularized-regression-models" class="section level2">
 <h2><span class="header-section-number">5.4</span> Training the Regularized Regression Models</h2>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">#Select lambda that reduces error</span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2">penalty_ridge &lt;-<span class="st"> </span>glm_cv_ridge<span class="op">$</span>lambda.min</a>
-<a class="sourceLine" id="cb25-3" data-line-number="3">penalty_lasso &lt;-<span class="st"> </span>glm_cv_lasso<span class="op">$</span>lambda.min</a>
-<a class="sourceLine" id="cb25-4" data-line-number="4">penalty_net &lt;-<span class="st"> </span>glm_cv_net<span class="op">$</span>lambda.min</a>
-<a class="sourceLine" id="cb25-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb25-6" data-line-number="6"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb25-7" data-line-number="7">glm_ridge_mod &lt;-<span class="st"> </span><span class="kw">glmnet</span>(<span class="dt">x =</span> <span class="kw">as.matrix</span>(train_x2), <span class="dt">y =</span> train_y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> penalty_ridge,<span class="dt">standardize =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb25-8" data-line-number="8">glm_lasso_mod &lt;-<span class="st"> </span><span class="kw">glmnet</span>(<span class="dt">x =</span> <span class="kw">as.matrix</span>(train_x2), <span class="dt">y =</span> train_y, <span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">lambda =</span> penalty_lasso,<span class="dt">standardize =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb25-9" data-line-number="9">glm_net_mod &lt;-<span class="st"> </span><span class="kw">glmnet</span>(<span class="dt">x =</span> <span class="kw">as.matrix</span>(train_x2), <span class="dt">y =</span> train_y, <span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="dt">lambda =</span> penalty_net,<span class="dt">standardize =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1"><span class="co">#Select lambda that reduces error</span></a>
+<a class="sourceLine" id="cb87-2" data-line-number="2">penalty_ridge &lt;-<span class="st"> </span>glm_cv_ridge<span class="op">$</span>lambda.min</a>
+<a class="sourceLine" id="cb87-3" data-line-number="3">penalty_lasso &lt;-<span class="st"> </span>glm_cv_lasso<span class="op">$</span>lambda.min</a>
+<a class="sourceLine" id="cb87-4" data-line-number="4">penalty_net &lt;-<span class="st"> </span>glm_cv_net<span class="op">$</span>lambda.min</a>
+<a class="sourceLine" id="cb87-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb87-6" data-line-number="6"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb87-7" data-line-number="7">glm_ridge_mod &lt;-<span class="st"> </span><span class="kw">glmnet</span>(<span class="dt">x =</span> <span class="kw">as.matrix</span>(train_x2), <span class="dt">y =</span> train_y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> penalty_ridge,<span class="dt">standardize =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb87-8" data-line-number="8">glm_lasso_mod &lt;-<span class="st"> </span><span class="kw">glmnet</span>(<span class="dt">x =</span> <span class="kw">as.matrix</span>(train_x2), <span class="dt">y =</span> train_y, <span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">lambda =</span> penalty_lasso,<span class="dt">standardize =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb87-9" data-line-number="9">glm_net_mod &lt;-<span class="st"> </span><span class="kw">glmnet</span>(<span class="dt">x =</span> <span class="kw">as.matrix</span>(train_x2), <span class="dt">y =</span> train_y, <span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="dt">lambda =</span> penalty_net,<span class="dt">standardize =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
 <div id="evaluating-the-regularized-regression-models-performance" class="section level2">
 <h2><span class="header-section-number">5.5</span> Evaluating the Regularized Regression Models’ Performance</h2>
 <p>The performance accuracy of the models was evaluated by comparing the predictions of each model with the actual sale prices in the training data. The graphs below show the predicted vs true Sale Price, and the score is the Root-Mean-Square Error(RMSE), which is the same metric Kaggle uses in its prediction evaluation for prediction submissions. The smaller the RMSE value the better, and the closer the dots are to the red dashed line, the closer the predicted values are to the actual values (this is based the on training data-set).</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">plot</span>(y_pred_ridge,train_y)</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1"><span class="kw">plot</span>(y_pred_ridge,train_y)</a>
+<a class="sourceLine" id="cb88-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plotpredridge"></span>
 <img src="House_Prices_Project_files/figure-html/plotpredridge-1.png" alt="Ridge Fit" width="672" />
 <p class="caption">
 Figure 5.4: Ridge Fit
 </p>
 </div>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw">plot</span>(y_pred_lasso,train_y)</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb89-2" data-line-number="2"><span class="kw">plot</span>(y_pred_lasso,train_y)</a>
+<a class="sourceLine" id="cb89-3" data-line-number="3"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plotpredlasso"></span>
 <img src="House_Prices_Project_files/figure-html/plotpredlasso-1.png" alt="Lasso Fit" width="672" />
 <p class="caption">
 Figure 5.5: Lasso Fit
 </p>
 </div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw">plot</span>(y_pred_net,train_y)</a>
-<a class="sourceLine" id="cb28-3" data-line-number="3"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb90-2" data-line-number="2"><span class="kw">plot</span>(y_pred_net,train_y)</a>
+<a class="sourceLine" id="cb90-3" data-line-number="3"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plotprednet"></span>
 <img src="House_Prices_Project_files/figure-html/plotprednet-1.png" alt="Elastic Net Fit" width="672" />
 <p class="caption">
@@ -707,7 +714,7 @@ Figure 5.6: Elastic Net Fit
 <p>The three regression models Lasso, Ridge, and Elastic Net performed similarly during training, with RMSE of about 0.11. The choice for best model is the Elastic Net model, because it includes fewer features, so it is a simpler model.</p>
 <table>
 <caption>
-<span id="tab:unnamed-chunk-4">Table 5.1: </span>Regression Models Comparison
+<span id="tab:unnamed-chunk-14">Table 5.1: </span>Regression Models Comparison
 </caption>
 <thead>
 <tr>
@@ -795,28 +802,28 @@ Elastic Net
 </tbody>
 </table>
 <p>Among the top features selected by the three models are several of the features created during the feature engineering phase. For example, the Total Area, Neighborhodd Category, Overall Score, Total Baths, and Age Category are in the top most important features, and all of these were the result of feature engineering.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">lassoVarImp &lt;-<span class="st"> </span><span class="kw">varImp</span>(glm_lasso_mod,<span class="dt">scale=</span>F, <span class="dt">lambda =</span> penalty_lasso)</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2">lassoImportance &lt;-<span class="st"> </span>lassoVarImp<span class="op">$</span>importance</a>
-<a class="sourceLine" id="cb29-3" data-line-number="3">varsSelected &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(lassoImportance<span class="op">$</span>Overall<span class="op">!=</span><span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb29-4" data-line-number="4">varsNotSelected &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(lassoImportance<span class="op">$</span>Overall<span class="op">==</span><span class="dv">0</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="kw">vip</span>(glm_ridge_mod, <span class="dt">num_features =</span> <span class="dv">20</span>, <span class="dt">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="dt">aesthetics =</span> <span class="kw">list</span>(<span class="dt">color =</span> <span class="st">&quot;Blue&quot;</span>))<span class="op">+</span><span class="st"> </span><span class="kw">theme_light</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1">lassoVarImp &lt;-<span class="st"> </span><span class="kw">varImp</span>(glm_lasso_mod,<span class="dt">scale=</span>F, <span class="dt">lambda =</span> penalty_lasso)</a>
+<a class="sourceLine" id="cb91-2" data-line-number="2">lassoImportance &lt;-<span class="st"> </span>lassoVarImp<span class="op">$</span>importance</a>
+<a class="sourceLine" id="cb91-3" data-line-number="3">varsSelected &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(lassoImportance<span class="op">$</span>Overall<span class="op">!=</span><span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb91-4" data-line-number="4">varsNotSelected &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(lassoImportance<span class="op">$</span>Overall<span class="op">==</span><span class="dv">0</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2"><span class="kw">vip</span>(glm_ridge_mod, <span class="dt">num_features =</span> <span class="dv">20</span>, <span class="dt">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="dt">aesthetics =</span> <span class="kw">list</span>(<span class="dt">color =</span> <span class="st">&quot;Blue&quot;</span>))<span class="op">+</span><span class="st"> </span><span class="kw">theme_light</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:vipridge"></span>
 <img src="House_Prices_Project_files/figure-html/vipridge-1.png" alt="Top 20 Features Ordered by Importance Ridge Model" width="672" />
 <p class="caption">
 Figure 5.7: Top 20 Features Ordered by Importance Ridge Model
 </p>
 </div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">vip</span>(glm_lasso_mod, <span class="dt">num_features =</span> <span class="dv">20</span>, <span class="dt">geom =</span> <span class="st">&quot;point&quot;</span>,<span class="dt">aesthetics =</span> <span class="kw">list</span>(<span class="dt">color =</span> <span class="st">&quot;Blue&quot;</span>))<span class="op">+</span><span class="st"> </span><span class="kw">theme_light</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb93-2" data-line-number="2"><span class="kw">vip</span>(glm_lasso_mod, <span class="dt">num_features =</span> <span class="dv">20</span>, <span class="dt">geom =</span> <span class="st">&quot;point&quot;</span>,<span class="dt">aesthetics =</span> <span class="kw">list</span>(<span class="dt">color =</span> <span class="st">&quot;Blue&quot;</span>))<span class="op">+</span><span class="st"> </span><span class="kw">theme_light</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:vitlasso"></span>
 <img src="House_Prices_Project_files/figure-html/vitlasso-1.png" alt="Top 20 Features Ordered by Importance Lasso Model" width="672" />
 <p class="caption">
 Figure 5.8: Top 20 Features Ordered by Importance Lasso Model
 </p>
 </div>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb32-2" data-line-number="2"><span class="kw">vip</span>(glm_net_mod, <span class="dt">num_features =</span> <span class="dv">20</span>, <span class="dt">geom =</span> <span class="st">&quot;point&quot;</span>,<span class="dt">aesthetics =</span> <span class="kw">list</span>(<span class="dt">color =</span> <span class="st">&quot;Blue&quot;</span>))<span class="op">+</span><span class="st"> </span><span class="kw">theme_light</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb94-2" data-line-number="2"><span class="kw">vip</span>(glm_net_mod, <span class="dt">num_features =</span> <span class="dv">20</span>, <span class="dt">geom =</span> <span class="st">&quot;point&quot;</span>,<span class="dt">aesthetics =</span> <span class="kw">list</span>(<span class="dt">color =</span> <span class="st">&quot;Blue&quot;</span>))<span class="op">+</span><span class="st"> </span><span class="kw">theme_light</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:vipnet"></span>
 <img src="House_Prices_Project_files/figure-html/vipnet-1.png" alt="Top 20 Features Ordered by Importance Elastic Net Model" width="672" />
 <p class="caption">
@@ -830,11 +837,11 @@ Figure 5.9: Top 20 Features Ordered by Importance Elastic Net Model
 <p>The Boruta algorithm is a wrapper built around the random forest classification algorithm. It selects the important features with respect to the outcome variable.</p>
 <p><strong>Feature Selection</strong></p>
 <p>Boruta selected 65 attributes confirmed important, and 88 attributes confirmed unimportant. After the boruta feature selection, 88 features were removed, living the data-set with 75 columns, the selected features are listed in the next page.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># The Boruta algorithm for feature selection uses Random Forest</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">123</span>)        <span class="co"># to get same results</span></a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">train_boruta &lt;-<span class="st"> </span><span class="kw">Boruta</span>(SalePrice<span class="op">~</span>., <span class="dt">data=</span>train_<span class="dv">1</span>, <span class="dt">doTrace=</span><span class="dv">2</span>, <span class="dt">maxRuns=</span><span class="dv">125</span>)</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="co"># printing the results </span></a>
-<a class="sourceLine" id="cb33-5" data-line-number="5"><span class="co">#print(train_boruta)</span></a></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1"><span class="co"># The Boruta algorithm for feature selection uses Random Forest</span></a>
+<a class="sourceLine" id="cb95-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">123</span>)        <span class="co"># to get same results</span></a>
+<a class="sourceLine" id="cb95-3" data-line-number="3">train_boruta &lt;-<span class="st"> </span><span class="kw">Boruta</span>(SalePrice<span class="op">~</span>., <span class="dt">data=</span>train_<span class="dv">1</span>, <span class="dt">doTrace=</span><span class="dv">2</span>, <span class="dt">maxRuns=</span><span class="dv">125</span>)</a>
+<a class="sourceLine" id="cb95-4" data-line-number="4"><span class="co"># printing the results </span></a>
+<a class="sourceLine" id="cb95-5" data-line-number="5"><span class="co">#print(train_boruta)</span></a></code></pre></div>
 <p><strong>Selected Features:</strong></p>
 <pre><code>##  [1] &quot;MSSubClass&quot;            &quot;LotFrontage&quot;           &quot;LotArea&quot;              
 ##  [4] &quot;OverallQual&quot;           &quot;OverallCond&quot;           &quot;MasVnrArea&quot;           
