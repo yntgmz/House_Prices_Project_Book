@@ -1,0 +1,466 @@
+---
+title: "Modeling"
+output:
+  html_document:
+    df_print: paged
+bibliography: [book.bib, packages.bib]
+---
+```{r setup, include=FALSE, eval =TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bookdown)
+library(kableExtra)
+library(knitr)          #for tables
+library(DataExplorer)   #for plot missing 
+library(RColorBrewer)   #for color palattes
+library(data.table)     #for custom function
+library(ggplot2)        #for general plotting
+library("GGally")       #for ggcor
+library(Rcpp)           #missmap
+library(Amelia)         #missmap
+library(dplyr)          #mutate(), select()
+library(ggridges)       #for ridge plot
+library(stringr)        #for looking at columns containg "string"
+library(imputeMissings) #impute missing values with median/mode or random forest
+library(mice)           #impute missing values
+library(forcats)        #for factor reorder
+library(caret)          #for hot one encoding
+library(plyr)           #to reorder factors 
+library(vip)            #to show 
+library(psych)          #corplot
+library(gridExtra)      #for tables and graps
+library(data.table)     #to create tables
+library(RColorBrewer)   #For graph colors
+library(naniar)         #plot missing values
+library(car)            #for VIF
+library(vip)            #for variable importance
+library(gbm)            #for gbm model and plot
+library(Metrics)        #for RMSE
+library(Boruta)         #Boruta() for feature selection
+library(gridExtra)
+library(xgboost)
+library(doParallel)
+library(lattice)        #for plots
+library(Matrix)
+library(glmnet)         #fitting regularized models  
+library(coefplot)       #for extracting coefficients
+
+```
+
+# Modeling
+
+**Clean Data**
+
+The original data, the  "Ames Housing Data-set", provided at Kaggle.com, contains 2919 observations and 80 explanatory variables. However, from this point on we are starting with an already cleaned and pre-processed data-set based on previous work, which consists of 2919 observations and 67 variables.  After transforming the categorical variables to numerical with dummy coding, the columns increase to 167 columns. 
+
+```{r cleanimport, echo=FALSE}
+ames_clean<-read.csv("AmesDataClean.csv",stringsAsFactors = TRUE) #2915 obs. of  67 variables:
+dim(ames_clean)
+head(ames_clean[,1:15])
+```
+
+
+**Dummy Codding: One of the last pre-processing steps before modeling**
+```{r dummycode}
+#Convert Categorical Features to numeric with dummy codding using function dummyVars() from Caret package.
+factor_var <- which(lapply(ames_clean, class) == "factor")
+data_temp<-ames_clean
+dummy<- dummyVars(" ~ MSSubClass + MSZoning +Street + Alley+ LotShape + LandContour+ LotConfig + Condition1 + Condition2 + BldgType + HouseStyle + RoofStyle + RoofMatl+ Heating + Exterior1st + Exterior2nd + MasVnrType + Foundation + GarageType + SaleType + SaleCondition + MiscFeature" , data = data_temp, fullRank = TRUE)
+pred<- data.frame (predict(dummy, data_temp))
+data_final<-cbind(ames_clean[,-factor_var], pred)
+
+```
+**Split pre-processed dataset into Train and Test sets for modeling***
+```{r testtrainsplit, }
+train_1<-data_final[1:1456,-1] 
+train_x<-select(train_1, -SalePrice)
+train_y<-train_1$SalePrice
+test_1<-data_final[1457:2915,-1] 
+test_1<-select(test_1, -SalePrice)
+train_1$SalePrice<- log(train_1$SalePrice)
+test_ID<-data_final[1457:2915,1]
+
+```
+
+## Multivariate Linear Regression Model
+We start by fitting a multivariate linear regression model to illustrate the issue of multicollinearity present in our data. The model returns a warning: "Coefficients: (4 not defined because of singularities)". This is due to variables that have perfect multicollinearity, so we find those variables and remove them. 
+
+```{r, fitlm1}
+#Fit Linear Model
+ml_model<- lm(SalePrice ~ ., train_1)
+summary(ml_model)
+```
+
+```{r removecol}
+#identify the linearly dependent variables
+ld_vars <- attributes(alias(ml_model)$Complete)$dimnames[[1]]
+#remove the linearly dependent variables variables
+train_ld<-select(train_1, -all_of(ld_vars))
+```
+
+Then, we fit the model again, and take a closer look at the the Variance Inflation Factors (VIFs), which measure extent to which a predictor is correlated with the other predictor variables. As we can see in the output, we find high levels of multicollinearity with VIF values greater than 10 in many cases. Ideally, we would like to keep the VIF values below 5. 
+
+```{r fitlm2, }
+#run model again
+ml_model_new <-lm(SalePrice ~ ., train_ld)
+```
+
+**Inspect the Variance Inflation Factors**
+```{r VIF,}
+vif(ml_model_new)
+```
+**Dealing with Multicollinearity**
+
+The curse of dimensionality refers to the phenomenon that many types of data analysis become significantly harder as the dimensionality of the data increases (@tan2019). As more variables get added and the complexity of the patterns increase, the training of the model becomes more time consuming and the predictive power decreases. 
+
+Multicollinearity for example, is a common problem in high‐dimensional data. Multicollinearity occurs when two or more predictor variables are highly correlated, and becomes a problem in many prediction settings. It is specially problematic in regression, since one of the assumptions of linear regression is the absence of multicollinearity and auto-correlation. As the number of features grow, regression  models tend to over-fit the training data, causing the sample error to increase. 
+
+Some approaches for dimensionality reduction are linear algebra based techniques such as Principal Component Analysis(PCA), which finds new attributes (principal components) that are linear combinations of the original attributes orthogonal to each other, and which capture the maximum amount of variation in the data. Another approach is a filter method, where the features are selected prior to modeling for  their statistical value to the model, for example when features are selected for their correlation value with the predicted variable. Wrapper, methods are also popular, these include Forward and Backward Elimination. There are also some algorithms that have their built in functions for feature selection, like Lasso regression. 
+
+This analysis deals with some of the issues that arise from high dimensionality by implementing regularized regression using the glmnet package [@glmnet]. We will also implement a wrapper method with a model called Boruta [@Boruta] to do feature selection  prior to fitting a gradient boosted model with the xgboost package[@xgboost].
+
+## Model Selection 
+One of the ways to deal with high multicollinearity is through regularization. Regularization is a regression technique, which limits, regulates or shrinks the estimated coefficient towards zero, which can reduce the variance and decrease out of sample error [@Boehmke]. This technique does not encourage learning of more complex models, and so it avoids the risk of over-fitting. I want to note that I  referenced heavily the code in the digital book :"Hands-On Machine Learning with R" by Bradley Boehmke & Brandon Greenwell [@Boehmke] for the modeling portion of the Regularized regression models. 
+
+Three regularization methods that help with collinearity and over-fitting are:
+
+* Lasso, penalizes the number of non-zero coefficients 
+* Ridge, penalizes the absolute magnitude of the coefficients
+* Elastic Net, a mixed method closely linked to lasso and ridge regression
+
+In addition to the methods listed above, we will also try a different approach using feature subset selection with the Boruta package [@Boruta] prior to fitting a gradient boosted tree, with the XGBoost package.  
+
+**Model Selection**
+
+| Model   |  Model Type               | Tuning Parameters                 |
+| :------ | :------------------------ | :-------------------------------- |
+| Lasso   | Regularization            | lambda                            |
+| Ridge   | Regularization            | lambda                            |
+| Elastic | Regularization            | lambda                            |
+| xgboost | Extreme Gradient Boosting | general & tree booster parameters |
+                                       
+
+```{r,echo=FALSE, message=FALSE, warning = FALSE}
+#Use pre-process to finish the preprocessing steps 
+#identify only the predictor variables
+features <- setdiff(names(data_final), c("Sale_Price", "Id"))
+#str(data_final) #183 variables
+train_final<-data_final[1:1456,]
+test_final<-data_final[1457:2915,]
+
+# pre-process estimation based on training features
+pre_process <- preProcess(
+  x      = train_final[features],  #181 columns
+  method = c("BoxCox", "center", "scale", "nzv"))
+
+# apply to both training & test
+train_x<- predict(pre_process, train_final[, features])
+test_x<- predict(pre_process, test_final[, features])
+
+```
+## Regularized Regression Models 
+The lasso model penalty is controlled by setting alpha=1, likewise the ridge penalty is controlled by alpha=0. The elastic-net penalty is controlled by alpha between 0 and 1. The tuning parameter lambda controls the overall strength of the penalty. 
+
+### Identify the Optimal Lambda Parameter
+To identify the optimal lambda value we used 10-fold cross-validation (CV) with cv.glmnet() from the glmnet package [@glmnet]. We selected the minimum lambda value as the metric to determine the optimal lambda value. 
+
+The figures show the 10-fold CV MSE across all the log lamda values. The numbers across the top of the plot are the number of features in the model. The first dashed line represents the log lamda value with the minimum MSE, and the second is the largest log lamda value within one standard error of it. 
+
+```{r dataprep,}
+train_x2<-select(train_x, -SalePrice)
+test_x2<-select(test_x, -SalePrice)
+train_y<- log(train_final$SalePrice)
+```
+**Ridge Model***
+```{r RidgeFit, fig.cap='Ridge Optimal Lamda', fig.align = 'center', collapse = TRUE}
+
+set.seed(123)
+glm_cv_ridge <- cv.glmnet(as.matrix(train_x2), train_y, alpha = 0)
+glm_cv_ridge
+plot(glm_cv_ridge)
+```
+
+```{r RidgeFitLamda, echo=FALSE}
+rfeatures<-nrow(extract.coef(glm_cv_ridge, lambda = "lambda.min")) -1
+cat("The optimal lambda value selected for the ridge model is: ", glm_cv_ridge$lambda.min)
+cat("And the ridge model retains all features, that is", rfeatures, "features in total.")
+```
+
+**Lasso Model***
+```{r LassoFit, fig.cap='Lasso Optimal Lamda', fig.align = 'center'}
+
+set.seed(123)
+glm_cv_lasso <- cv.glmnet(as.matrix(train_x2), train_y, alpha = 1)
+glm_cv_lasso
+plot(glm_cv_lasso)
+
+```
+
+
+```{r, echo=FALSE}
+lfeatures<-nrow(extract.coef(glm_cv_lasso, lambda = "lambda.min")) -1
+cat("The optimal lambda value selected for the lasso model is:", glm_cv_lasso$lambda.min) 
+cat("And the number of features to be retained is:", lfeatures)
+```
+
+**Elastic Net Model ***
+```{r modelfitnet, fig.cap='Elastic Net Optimal Lamda', fig.align = 'center'}
+
+set.seed(123)
+glm_cv_net<- cv.glmnet(data.matrix(train_x2), train_y, alpha = 0.1)
+glm_cv_net
+plot(glm_cv_net)
+
+```
+
+```{r, echo=FALSE}
+efeatures<-nrow(extract.coef(glm_cv_net, lambda = "lambda.min")) -1
+cat("The optimal lambda value selected for the Elastic Net model is:", glm_cv_net$lambda.min) 
+cat("And the number of features to be retained is:", efeatures)
+```
+
+## Training the Regularized Regression Models 
+```{r modeltrain}
+#Select lambda that reduces error
+penalty_ridge <- glm_cv_ridge$lambda.min
+penalty_lasso <- glm_cv_lasso$lambda.min
+penalty_net <- glm_cv_net$lambda.min
+
+set.seed(123)
+glm_ridge_mod <- glmnet(x = as.matrix(train_x2), y = train_y, alpha = 0, lambda = penalty_ridge,standardize = FALSE)
+glm_lasso_mod <- glmnet(x = as.matrix(train_x2), y = train_y, alpha = 1, lambda = penalty_lasso,standardize = FALSE)
+glm_net_mod <- glmnet(x = as.matrix(train_x2), y = train_y, alpha = 0.1, lambda = penalty_net,standardize = FALSE)
+
+```
+
+## Evaluating the Regularized Regression Models' Performance 
+The performance accuracy of the models was evaluated by comparing the predictions of each model with the actual sale prices in the training data. The graphs below show the predicted vs true Sale Price, and the score is the Root-Mean-Square Error(RMSE), which is the same metric Kaggle uses in its prediction evaluation for prediction submissions. The smaller the RMSE value the better, and the closer the dots are to the red dashed line, the closer the predicted values are to the actual values (this is based the on training data-set).
+
+```{r, reg_predict_train, echo=FALSE}
+## Predict on training set to evaluate the model performance 
+y_pred_ridge <- as.numeric(predict(glm_ridge_mod, as.matrix(train_x2)))
+y_pred_lasso <- as.numeric(predict(glm_lasso_mod, as.matrix(train_x2)))
+y_pred_net<- as.numeric(predict(glm_net_mod,as.matrix(train_x2)))
+```
+
+```{r plotpredridge, fig.cap='Ridge Fit', fig.align = 'center'}
+
+plot(y_pred_ridge,train_y)
+abline(a=0, b=1, col="red", lwd=3, lty=2)
+
+```
+
+```{r plotpredlasso, fig.cap='Lasso Fit', fig.align = 'center', collapse = TRUE}
+
+plot(y_pred_lasso,train_y)
+abline(a=0, b=1, col="red", lwd=3, lty=2)
+
+```
+
+```{r plotprednet, fig.cap='Elastic Net Fit', fig.align = 'center', collapse = TRUE}
+
+plot(y_pred_net,train_y)
+abline(a=0, b=1, col="red", lwd=3, lty=2)
+
+```
+
+The three regression models Lasso, Ridge, and Elastic Net performed similarly during training, with RMSE of about 0.11. The choice for best model is the Elastic Net model, because it includes fewer features, so it is a simpler model. 
+
+```{r, echo=FALSE}
+
+#Ridge
+ridge_SSE <- sum((y_pred_ridge - train_y)^2)
+ridge_SST <- sum((train_y - mean(y_pred_ridge))^2)
+ridge_R_squared <- 1 - ridge_SSE / ridge_SST
+ridge_corr<-cor(y_pred_ridge, train_y)
+ridge_RMSE<-rmse(train_y, y_pred_ridge)
+
+#Lasso
+lasso_SSE <- sum((y_pred_lasso - train_y)^2)
+lasso_SST <- sum((train_y - mean(y_pred_lasso))^2)
+lasso_R_squared <- 1 - lasso_SSE / lasso_SST
+lasso_corr<-cor(y_pred_lasso, train_y)
+lasso_RMSE<-rmse(train_y,y_pred_lasso)
+
+# Elastic Net
+
+net_SSE <- sum((y_pred_net - train_y)^2)
+net_SST <- sum((train_y - mean(y_pred_net))^2)
+net_R_squared <- 1 - net_SSE / net_SST
+net_corr<-cor(y_pred_net, train_y)
+net_RMSE<-rmse(train_y,y_pred_net)
+
+#Summary Table
+regression_models<- c("Ridge", "Lasso", "Elastic Net")
+tunning_parameters<-c(penalty_ridge, penalty_lasso, penalty_net)
+nfeatures<-c(rfeatures, lfeatures,efeatures )
+R_Squared<-c(ridge_R_squared, lasso_R_squared, net_R_squared)
+Cor<- c(ridge_corr, lasso_corr, net_corr)
+RMSE<-c(ridge_RMSE, lasso_RMSE, net_RMSE)
+
+kable(data.frame(Models=regression_models, Parameters= tunning_parameters, Features=nfeatures, Rsquared=R_Squared, Corr=Cor,  RMSE = RMSE), caption = "Regression Models Comparison")
+
+```
+
+Among the top features selected by the three models are several of the features created during the feature engineering phase. For example, the Total Area,  Neighborhodd Category, Overall Score, Total Baths, and Age Category are in the top most important features, and all of these were the result of feature engineering. 
+
+
+```{r}
+lassoVarImp <- varImp(glm_lasso_mod,scale=F, lambda = penalty_lasso)
+lassoImportance <- lassoVarImp$importance
+varsSelected <- length(which(lassoImportance$Overall!=0))
+varsNotSelected <- length(which(lassoImportance$Overall==0))
+```
+
+```{r vipridge,  fig.cap='Top 20 Features Ordered by Importance Ridge Model', fig.align = 'center', collapse = TRUE}
+
+vip(glm_ridge_mod, num_features = 20, geom = "point", aesthetics = list(color = "Blue"))+ theme_light()
+```
+
+
+```{r vitlasso, fig.cap='Top 20 Features Ordered by Importance Lasso Model', fig.align = 'center', collapse = TRUE}
+
+vip(glm_lasso_mod, num_features = 20, geom = "point",aesthetics = list(color = "Blue"))+ theme_light()
+```
+
+
+```{r vipnet, fig.cap='Top 20 Features Ordered by Importance Elastic Net Model', fig.align = 'center', collapse = TRUE}
+
+vip(glm_net_mod, num_features = 20, geom = "point",aesthetics = list(color = "Blue"))+ theme_light()
+
+```
+
+## Training XGBoost Model with Feature Selection
+Next we will implement an advanced machine learning model with a gradient boosted tree model using the xgboost package [@xgboost]. First, we will do some feature selection using the Boruta algorithm from the Boruta package [@Boruta]. 
+
+The Boruta algorithm is a wrapper built around the random forest classification algorithm. It selects the important features  with respect to the outcome variable.
+
+**Feature Selection** 
+
+Boruta selected 65 attributes confirmed important, and 88 attributes confirmed unimportant. After the boruta feature selection, 88 features were removed, living the data-set with 75 columns, the selected features are listed in the next page. 
+
+```{r, FeatureSelctionBoruta, message=FALSE}
+# The Boruta algorithm for feature selection uses Random Forest
+set.seed(123)        # to get same results
+train_boruta <- Boruta(SalePrice~., data=train_1, doTrace=2, maxRuns=125)
+# printing the results 
+#print(train_boruta)
+
+```
+**Selected Features:**
+
+```{r ApplyFeatureSelction,echo=FALSE}
+# Getting selected feautres and its stats.
+trainb_fix <- TentativeRoughFix(train_boruta)
+trainb_selfeat <- getSelectedAttributes(trainb_fix, withTentative = F)
+trainb_selfeat_stats <- attStats(trainb_fix)
+trainb_selfeat
+borutafeatures<-length(trainb_selfeat)
+```
+
+This plot shows the selected features in green, and the rejected features in red. The yellow, represent tentative attributes. 
+
+```{r BorutaSelection, echo=FALSE, fig.cap='Boruta Feature Selection', fig.align = 'center', collapse = TRUE}
+
+#Plot results of Boruta variable selection
+plot(train_boruta , las=2, cex.axis=0.6, xlab='', main="Feature Selection")
+
+```
+
+### Training the XGboost Model 
+
+The XGBoost model has several sets of parameters that can be customized: we focused on only two: general parameters, which relate to which booster is used, in this case we selected a 'gbtree'; and the second parameters we tuned were the booster parameters. For the booster parameter, we used 5-fold cross validation to determine the optimal number of rounds. 
+For the rest of the booster parameters, the best way to find the optimal parameters is to set a search grid, however this was taking too long (more than an hour to run). So, instead of using this approach I started with the default parameters, and manually changed the min_child_weight(default=1), and  eta(default = 0.3), about three times, until I got a better RMSE on the training data. This is not the ideal way to do it, but I am  not sure my computer was ever going to get through it. 
+
+The final parameters chosen, which resulted in training RMSE:0.125043, were:
+
+\begin{itemize}
+  \item booster $=$ gbtree
+  \item eta $=$ 0$.$05, default $=$ 0.3, controls the learning rate
+  \item max depth $=$ 6, default $=$ 6, tree depth
+  \item min child weight $=$ 4, default $=$ 1, minimum number of observations required in each terminal node
+  \item subsample $=$ 1
+  \item colsample bytree $=$1, percent of columns to sample from for each tree
+  \item nrounds $=$ 243
+\end{itemize}
+
+
+```{r, XGB with FeatureSelction,echo=FALSE, message=FALSE }
+train_x_fs<-train_1[,trainb_selfeat] #1,460 rows, 75 columns
+train_y_fs<-train_1$SalePrice
+test_1_fs<-test_1[,trainb_selfeat] #  1,459  75 columns
+
+# Put testing & training data into two seperates Dmatrixs objects
+label_train_fs <- train_y_fs
+
+dtrain_fs <- xgb.DMatrix(data = as.matrix(train_x_fs), label= label_train_fs )
+dtest_fs <- xgb.DMatrix(data = as.matrix(test_1_fs))
+
+#CV control
+my_control_fs <-trainControl(method="cv", number=5)
+# xgb grid was taking too long
+xgb_grid_sf = expand.grid(
+nrounds = 1000,
+eta = c(0.1, 0.05, 0.01),
+max_depth = c(2, 3, 4, 5, 6),
+gamma = 0,
+colsample_bytree=1,
+min_child_weight=c(1, 2, 3, 4 ,5),
+subsample=1
+)
+```
+
+#### Tuning Paraments
+```{r XGB Parameter Tuning, echo=FALSE, message=FALSE }
+#Parameter Tuning
+default_param_sf<-list(
+        booster = "gbtree",
+        eta=0.05, #default = 0.3
+        gamma=0,
+        max_depth=6, #default=6
+        min_child_weight=4, #default=1
+        subsample=1,
+        colsample_bytree=1
+)
+
+#Cross validation to determine the best number of rounds 
+set.seed(123)
+
+xgbcv_fs <- xgb.cv( params = default_param_sf, data =dtrain_fs, nrounds = 500, nfold = 5, showsd = T, stratified = T, print_every_n_fs = 40, early_stopping_rounds = 10, maximize = F)
+
+cat("The XGB model includes",  borutafeatures,  "features, and  the optimal number of rounds:",  xgbcv_fs$best_iteration, "was selected based on  RMSE of 0.121172")
+
+```
+
+
+```{r train the model , echo=FALSE, message=FALSE }
+
+xgb_mod_fs <- xgb.train(data = dtrain_fs, params=default_param_sf, nrounds = xgbcv_fs$best_iteration)
+xgb_mod_fs 
+
+```
+
+## Evaluating XGBoost Model's Performance
+
+The XGB model performs much better (with R-squared=0.9831584) than the best performing regularized regression model: Lasso (R-squared=0.9226179). So, 98% of the variation in the in SalePrice is explained by the XGB model vs only 92% by the Lasso model (similarly with the Ridge and Elastic Net models).
+
+```{r, XGBSave,echo=FALSE}
+
+#Calculate RMSE on training data
+XGBpred_train <- predict(xgb_mod_fs, dtrain_fs)
+
+XGB_SSE <- sum((XGBpred_train - train_y_fs)^2)
+XGB_SST <- sum((train_y_fs - mean(XGBpred_train))^2)
+XGB_R_squared <- 1 - XGB_SSE / XGB_SST
+XGB_corr<-cor(XGBpred_train, train_y_fs)
+XGB_RMSE<-rmse(train_y_fs,XGBpred_train)
+
+
+regression_models<- c("Ridge", "Lasso", "Elastic Net", "XGBoost")
+tunning_parameters<-c(penalty_ridge, penalty_lasso, penalty_net, " ")
+nfeatures<-c(rfeatures, lfeatures, efeatures, borutafeatures)
+R_Squared<-c(ridge_R_squared, lasso_R_squared, net_R_squared, XGB_R_squared)
+Cor<- c(ridge_corr, lasso_corr, net_corr, XGB_corr)
+RMSE<-c(ridge_RMSE, lasso_RMSE, net_RMSE, XGB_RMSE)
+kable(data.frame(Models=regression_models, Parameters= tunning_parameters, Features=nfeatures,Corr=Cor,  Rsquared=R_Squared, RMSE = RMSE), caption = "Models Performance Comparison")
+
+```

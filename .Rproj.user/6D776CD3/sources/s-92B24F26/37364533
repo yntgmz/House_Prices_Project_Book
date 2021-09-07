@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1630706570144.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "37364533",
+    "lastKnownWriteTime" : 1630709969,
+    "last_content_update" : 1630709969574,
+    "path" : "~/Documents/House_Prices_Project/source_script.R",
+    "project_path" : "source_script.R",
+    "properties" : {
+        "cursorPosition" : "496,3",
+        "scrollLine" : "484",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

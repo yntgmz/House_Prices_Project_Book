@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Starting Point | House Prices Advanced Regression Techniques</title>
+  <meta name="description" content="This is a project based on a getting started Kaggle competition House Prices - Advanced Regression Techniques." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Starting Point | House Prices Advanced Regression Techniques" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a project based on a getting started Kaggle competition House Prices - Advanced Regression Techniques." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Starting Point | House Prices Advanced Regression Techniques" />
+  
+  <meta name="twitter:description" content="This is a project based on a getting started Kaggle competition House Prices - Advanced Regression Techniques." />
+  
+
+<meta name="author" content="Yanet Gomez" />
+
+
+<meta name="date" content="2021-09-03" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="data.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.6.1/grViz.js"></script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="starting-point.html"><a href="starting-point.html"><i class="fa fa-check"></i><b>2</b> Starting Point</a><ul>
+<li class="chapter" data-level="2.1" data-path="starting-point.html"><a href="starting-point.html#origin"><i class="fa fa-check"></i><b>2.1</b> Origin</a></li>
+<li class="chapter" data-level="2.2" data-path="starting-point.html"><a href="starting-point.html#technical-skills"><i class="fa fa-check"></i><b>2.2</b> Technical Skills</a></li>
+<li class="chapter" data-level="2.3" data-path="starting-point.html"><a href="starting-point.html#problem-definition"><i class="fa fa-check"></i><b>2.3</b> Problem Definition</a></li>
+<li class="chapter" data-level="2.4" data-path="starting-point.html"><a href="starting-point.html#data-analytics-workflow"><i class="fa fa-check"></i><b>2.4</b> Data Analytics Workflow</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>3</b> Data</a></li>
+<li class="chapter" data-level="4" data-path="data-pre-processing.html"><a href="data-pre-processing.html"><i class="fa fa-check"></i><b>4</b> Data Pre-processing</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-pre-processing.html"><a href="data-pre-processing.html#identifying-and-correcting-missing-values"><i class="fa fa-check"></i><b>4.1</b> Identifying and Correcting Missing Values</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="data-pre-processing.html"><a href="data-pre-processing.html#detect-missing-values"><i class="fa fa-check"></i><b>4.1.1</b> Detect Missing Values</a></li>
+<li class="chapter" data-level="4.1.2" data-path="data-pre-processing.html"><a href="data-pre-processing.html#dealing-with-missing-values"><i class="fa fa-check"></i><b>4.1.2</b> Dealing With Missing Values</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="data-pre-processing.html"><a href="data-pre-processing.html#correct-data-types"><i class="fa fa-check"></i><b>4.2</b> Correct Data Types</a></li>
+<li class="chapter" data-level="4.3" data-path="data-pre-processing.html"><a href="data-pre-processing.html#feature-transformation"><i class="fa fa-check"></i><b>4.3</b> Feature Transformation</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="data-pre-processing.html"><a href="data-pre-processing.html#visualizing-the-distribution-and-spread-of-target-feature-salesprice"><i class="fa fa-check"></i><b>4.3.1</b> Visualizing the Distribution and Spread of Target Feature : SalesPrice</a></li>
+<li class="chapter" data-level="4.3.2" data-path="data-pre-processing.html"><a href="data-pre-processing.html#features-highly-correlated-with-sales-price"><i class="fa fa-check"></i><b>4.3.2</b> Features Highly Correlated with Sales Price</a></li>
+<li class="chapter" data-level="4.3.3" data-path="data-pre-processing.html"><a href="data-pre-processing.html#attribute-construction-from-year-features"><i class="fa fa-check"></i><b>4.3.3</b> Attribute Construction from Year Features</a></li>
+<li class="chapter" data-level="4.3.4" data-path="data-pre-processing.html"><a href="data-pre-processing.html#reducing-levels-by-grouping-unrepresented-categories"><i class="fa fa-check"></i><b>4.3.4</b> Reducing Levels by Grouping Unrepresented Categories</a></li>
+<li class="chapter" data-level="4.3.5" data-path="data-pre-processing.html"><a href="data-pre-processing.html#attribute-construction-by-combining-some-features-to-make-new-features."><i class="fa fa-check"></i><b>4.3.5</b> Attribute Construction by Combining some Features to make New Features.</a></li>
+<li class="chapter" data-level="4.3.6" data-path="data-pre-processing.html"><a href="data-pre-processing.html#attribute-construction-by-binning"><i class="fa fa-check"></i><b>4.3.6</b> Attribute Construction by Binning</a></li>
+<li class="chapter" data-level="4.3.7" data-path="data-pre-processing.html"><a href="data-pre-processing.html#new-variables-by-interactions"><i class="fa fa-check"></i><b>4.3.7</b> New Variables by Interactions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="data-pre-processing.html"><a href="data-pre-processing.html#dimensionality-and-numerosity-reduction"><i class="fa fa-check"></i><b>4.4</b> Dimensionality and Numerosity Reduction</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="data-pre-processing.html"><a href="data-pre-processing.html#outliers"><i class="fa fa-check"></i><b>4.4.1</b> Outliers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="modeling.html"><a href="modeling.html"><i class="fa fa-check"></i><b>5</b> Modeling</a><ul>
+<li class="chapter" data-level="5.1" data-path="modeling.html"><a href="modeling.html#multivariate-linear-regression-model"><i class="fa fa-check"></i><b>5.1</b> Multivariate Linear Regression Model</a></li>
+<li class="chapter" data-level="5.2" data-path="modeling.html"><a href="modeling.html#model-selection"><i class="fa fa-check"></i><b>5.2</b> Model Selection</a></li>
+<li class="chapter" data-level="5.3" data-path="modeling.html"><a href="modeling.html#regularized-regression-models"><i class="fa fa-check"></i><b>5.3</b> Regularized Regression Models</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="modeling.html"><a href="modeling.html#identify-the-optimal-lambda-parameter"><i class="fa fa-check"></i><b>5.3.1</b> Identify the Optimal Lambda Parameter</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="modeling.html"><a href="modeling.html#training-the-regularized-regression-models"><i class="fa fa-check"></i><b>5.4</b> Training the Regularized Regression Models</a></li>
+<li class="chapter" data-level="5.5" data-path="modeling.html"><a href="modeling.html#evaluating-the-regularized-regression-models-performance"><i class="fa fa-check"></i><b>5.5</b> Evaluating the Regularized Regression Models’ Performance</a></li>
+<li class="chapter" data-level="5.6" data-path="modeling.html"><a href="modeling.html#training-xgboost-model-with-feature-selection"><i class="fa fa-check"></i><b>5.6</b> Training XGBoost Model with Feature Selection</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="modeling.html"><a href="modeling.html#training-the-xgboost-model"><i class="fa fa-check"></i><b>5.6.1</b> Training the XGboost Model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="modeling.html"><a href="modeling.html#evaluating-xgboost-models-performance"><i class="fa fa-check"></i><b>5.7</b> Evaluating XGBoost Model’s Performance</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="prediction.html"><a href="prediction.html"><i class="fa fa-check"></i><b>6</b> Prediction</a><ul>
+<li class="chapter" data-level="6.1" data-path="prediction.html"><a href="prediction.html#prediction-with-regularized-regression-models"><i class="fa fa-check"></i><b>6.1</b> Prediction with Regularized Regression Models</a></li>
+<li class="chapter" data-level="6.2" data-path="prediction.html"><a href="prediction.html#prediction-with-xgboost-model"><i class="fa fa-check"></i><b>6.2</b> Prediction with XGboost Model</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
+<li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#answer-to-research-questions"><i class="fa fa-check"></i><b>7.1</b> Answer to Research Questions</a></li>
+<li class="chapter" data-level="7.2" data-path="conclusion.html"><a href="conclusion.html#future-work"><i class="fa fa-check"></i><b>7.2</b> Future Work</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">House Prices Advanced Regression Techniques</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="starting-point" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Starting Point</h1>
+<ul>
+<li>Semester Date: Spring 2021</li>
+<li>Class: Capstone Portfolio (STAT 6382)</li>
+<li>Program: Master of Science in Data Analytics</li>
+<li>School: University of Houston Downtown</li>
+</ul>
+<div id="origin" class="section level2">
+<h2><span class="header-section-number">2.1</span> Origin</h2>
+<p>House Prices: Advanced Regression Techniques is an ongoing Kaggle competition <span class="citation">(Kaggle, <a href="#ref-kagglehouseprices">n.d.</a>)</span>. This “getting started” competition calls for extensive data pre-processing, feature engineering, and implementation of advanced regression techniques like random forest and gradient boosting. The data-set was made available through the Kaggle website at kaggle.com <span class="citation">(De Cock <a href="#ref-houseprices">2011</a>)</span>.</p>
+</div>
+<div id="technical-skills" class="section level2">
+<h2><span class="header-section-number">2.2</span> Technical Skills</h2>
+<ul>
+<li><p>Techniques: Data Cleaning, Exploratory Data Analysis, Feature Engineering, Advanced Regression Techniques, Machine Learning</p></li>
+<li><p>Program: R</p></li>
+</ul>
+</div>
+<div id="problem-definition" class="section level2">
+<h2><span class="header-section-number">2.3</span> Problem Definition</h2>
+<p>Buying a house is a complicated decision making process for a lot of people. As Kaggle.com puts it: “Ask a home buyer to describe their dream house, and they probably won’t begin with the height of the basement ceiling or the proximity to an east-west railroad” <span class="citation">(Kaggle, <a href="#ref-kagglehouseprices">n.d.</a>)</span>. However, it is in fact, characteristics like these that influence the price of homes. Throughout this project we will explore a plethora of house features from kitchen quality to land slope, and evaluate their contribution to the sale price of homes. With some luck, or rather some data analytics skills, we will gain some insight into the real estate world of pricing residential homes. By understanding the relationship between key features and price, both buyers and sellers can optimize their price negotiations game, and make smarter financial decisions in the process of buying or selling a home.</p>
+<p>This project has three main goals. The first, as defined by Kaggle, is to predict the sales price value for each ID in the test set using advanced regression techniques. The second goal is to identify which features affect sale price the most. Lastly, I would like to explore which data analytics techniques lead to a better prediction in this case.</p>
+<ul>
+<li>Which are the most relevant features that impact sales price?</li>
+<li>Which data pre-processing techniques improve the predictive value of the data?</li>
+<li>Which model performs best at predicting price?</li>
+</ul>
+</div>
+<div id="data-analytics-workflow" class="section level2">
+<h2><span class="header-section-number">2.4</span> Data Analytics Workflow</h2>
+<p>Here(fig:Workflow) is an overview of the data analytics workflow for this project done with packages ‘DiagrameR’ <span class="citation">(Iannone <a href="#ref-diagramer">2020</a>)</span> and ‘webshot’ <span class="citation">(Chang <a href="#ref-webshot">2019</a>)</span>.</p>
+<div class="figure" style="text-align: center"><span id="fig:Workflow"></span>
+<div id="htmlwidget-1b08f332585463ade4c8" style="width:auto;height:100px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1b08f332585463ade4c8">{"x":{"diagram":"\ndigraph boxes_and_circles {\ngraph [layout = dot, rankdir = LR]\nnode [shape = rectangle,color=AliceBlue, fontname = Helvetica,\n     style = filled, fillcolor = AliceBlue, fontname=Helvetica, fontsize=14, fontcolor=SlateGray]\nedge [color = SteelBlue,\n     arrowsize = 1, penwidth=1.2]\nrec1 [label = \"Data\"]\nrec2 [label = \"Data Preprocessing\"]\nrec3 [label = \"Modeling\"]\nrec4 [label = \"Prediction\"]\nrec5 [label = \"Validation\"]\n\n\nrec1-> rec2-> rec3-> rec4-> rec5\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+Figure 2.1: Workflow
+</p>
+</div>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-webshot">
+<p>Chang, Winston. 2019. <em>Webshot: Take Screenshots of Web Pages</em>. <a href="https://CRAN.R-project.org/package=webshot">https://CRAN.R-project.org/package=webshot</a>.</p>
+</div>
+<div id="ref-houseprices">
+<p>De Cock, Dean. 2011. “House Prices - Advanced Regression Techniques.” <a href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data">https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data</a>.</p>
+</div>
+<div id="ref-diagramer">
+<p>Iannone, Richard. 2020. <em>DiagrammeR: Graph/Network Visualization</em>. <a href="https://CRAN.R-project.org/package=DiagrammeR">https://CRAN.R-project.org/package=DiagrammeR</a>.</p>
+</div>
+<div id="ref-kagglehouseprices">
+<p>Kaggle. n.d. “House Prices - Advanced Regression Techniques.” <a href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques/overview/description">https://www.kaggle.com/c/house-prices-advanced-regression-techniques/overview/description</a>.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["House_Prices_Project.pdf", "House_Prices_Project.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

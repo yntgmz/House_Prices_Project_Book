@@ -1,0 +1,95 @@
+---
+title: "Prediction"
+output:
+  html_document:
+    df_print: paged
+bibliography: [book.bib, packages.bib]
+---
+```{r setup, include=FALSE, eval =TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bookdown)
+library(kableExtra)
+library(knitr)          #for tables
+library(DataExplorer)   #for plot missing 
+library(RColorBrewer)   #for color palattes
+library(data.table)     #for custom function
+library(ggplot2)        #for general plotting
+library("GGally")       #for ggcor
+library(Rcpp)           #missmap
+library(Amelia)         #missmap
+library(dplyr)          #mutate(), select()
+library(ggridges)       #for ridge plot
+library(stringr)        #for looking at columns containg "string"
+library(imputeMissings) #impute missing values with median/mode or random forest
+library(mice)           #impute missing values
+library(forcats)        #for factor reorder
+library(caret)          #for hot one encoding
+library(plyr)           #to reorder factors 
+library(vip)            #to show 
+library(psych)          #corplot
+library(gridExtra)      #for tables and graps
+library(data.table)     #to create tables
+library(RColorBrewer)   #For graph colors
+library(naniar)         #plot missing values
+library(car)            #for VIF
+library(vip)            #for variable importance
+library(gbm)            #for gbm model and plot
+library(Metrics)        #for RMSE
+library(Boruta)         #Boruta() for feature selection
+library(gridExtra)
+library(xgboost)
+library(doParallel)
+library(lattice)        #for plots
+library(Matrix)
+library(glmnet)         #fitting regularized models  
+library(coefplot)       #for extracting coefficients
+
+```
+
+
+# Prediction
+
+## Prediction with Regularized Regression Models
+
+```{r scriptimport, echo=FALSE, message=FALSE, warning=FALSE}
+source('source_Script.R')
+
+```
+
+
+```{r reg_predict, echo=FALSE}
+pred_ridge_test <-  as.double(predict(glm_ridge_mod, as.matrix(test_x2)))
+pred_lasso_test <-  as.double(predict(glm_lasso_mod, as.matrix(test_x2)))
+pred_net_test<-  as.double(predict(glm_net_mod,as.matrix(test_x2)))
+pred_ridge_test_final<- exp(pred_ridge_test)
+pred_lasso_test_final<- exp(pred_lasso_test)
+pred_net_test_final<- exp(pred_net_test)
+head(pred_net_test_final)
+```
+
+## Prediction with XGboost Model 
+```{r xgb_predict,message=FALSE, warning=FALSE}
+#Prediction
+XGBpred_fs <- predict(xgb_mod_fs, dtest_fs)
+predictions_XGB_fs <- exp(XGBpred_fs) #reverse the log to the real values
+head(predictions_XGB_fs)
+```
+
+**Store the item IDs and class labels in a csv file**
+
+```{r savepreds,}
+
+Ridge_model_final_data2<- data.frame("ID"=test_final$Id,"SalePrice"=pred_ridge_test_final)
+write.csv(Ridge_model_final_data2, "Ridge_ModelFinal2", row.names=FALSE)
+
+Lasso_model_final_data2<- data.frame("ID"=test_final$Id,"SalePrice"=pred_lasso_test_final)
+write.csv(Lasso_model_final_data2, "Lasso_ModelFinal2", row.names=FALSE)
+
+ElasticNet_model_final_data2<- data.frame("ID"=test_final$Id,"SalePrice"=pred_net_test_final)
+write.csv(ElasticNet_model_final_data2, "ElasticNet_ModelFinal2", row.names=FALSE)
+
+xgbmodel_pred_d2_fs<- data.frame("ID"=test_ID,"SalePrice"=predictions_XGB_fs)
+write.csv(xgbmodel_pred_d2_fs, "xgbModel_fs_outl", row.names=FALSE) 
+
+```
+

@@ -1,0 +1,51 @@
+---
+title: "House Prices Advanced Regression Techniques"
+author: "Yanet Gomez"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "This is a project based on a getting started Kaggle competition House Prices - Advanced Regression Techniques." 
+---
+
+# Introduction
+
+This is a data analytics project I completed while enrolled in the Master's of Science in Data Analytics (MSDA) program at the University of Houston Downtown (UHD). It is based on a getting started Kaggle competition: "House Prices - Advanced Regression Techniques". I chose this project because it provides an opportunity to explore all of the stages in the Data Analytics Workflow: data pre-processing, modeling, prediction, and validation.  The goal of this project is to predict the sale price of houses using a large set of house features by applying advanced regression techniques. However, before we could jump into building a highly accurate prediction model, an extensive amount of data pre-processing had to be done. The major pre-processing tasks employed in this project were: data cleaning, to address missing values and noisy data; data transformation via smoothing, attribute construction, aggregation, discretization and hierarchy generation in order to transform the data into appropriate forms for mining; and feature selection by removing redundant features and features with near zero variability. The next step is the modeling portion of the data analytics workflow. In this step I address ways to deal with "the curse of dimensionality", model selection, model evaluation, and model improvement methods. The final steps involve prediction and validation. The primary evaluation metric was the log Root-Mean-Squared-Error (RMSE), since that is how Kaggle submissions would be evaluated for this competition.
+
+**Required Packages**
+
+```{r, eval=FALSE}
+
+#install.packages("bookdown") 
+#install.packages("glmnet")         #for fitting regularized models, Repeated cross validation
+#install.packages("vip")            #for variable importance
+#install.packages("car")            #for VIF
+#install.packages("DataExplorer")   #for graphing missing data
+#install.packages("data.table")     #for tables
+#install.packages("imputeMissings") #for NAs
+#install.packages("mice")           #for RF prediction
+#install.packages("naniar")         #plot missing values
+#install.packages("mlr3pipelines")  
+#install.packages("kableExtra")     #for tables
+#install.packages("ggridges")       #for ploting
+#install.packages("DiagrammeR")     #for workflow diagram
+#install.packages("webshot")        #for workflow diagram
+#install.packages("ggplot2")        #for plotting
+#install.packages("caret")          #for tuning and crossvalidation
+#install.packages("xgboost")        #for xgboost algorithm
+#install.packages("Boruta")         #for feature selection
+#install.packages("GGally")         #for plotting
+#install.packages("lattice")        #for plotting
+
+
+```
+
+
+```{r, include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown', 'packages.bib', 'vip', 'car', 'DataExplorer', 'car', 'DataExplorer', 'data.table', 'imputeMissings', 'mice', 'naniar', 'mlr3pipelines',  'ggridges', 'kableExtra', 'xgboost', 'Boruta', 'GGally', 'lattice', 'glmnet', 'webshot','ggplot2', 'caret' ))
+
+```

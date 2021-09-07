@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1630707090519.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "878522800",
+    "id" : "59AE8518",
+    "lastKnownWriteTime" : 1631042034,
+    "last_content_update" : 1631042034183,
+    "path" : "~/Documents/House_Prices_Project/05-Prediction.Rmd",
+    "project_path" : "05-Prediction.Rmd",
+    "properties" : {
+        "cursorPosition" : "60,15",
+        "scrollLine" : "51"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

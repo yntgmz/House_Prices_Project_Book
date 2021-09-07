@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1630706158745.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "4A85F3D9",
+    "lastKnownWriteTime" : 1630792891,
+    "last_content_update" : 1630792891,
+    "path" : "~/Documents/House_Prices_Project/01-Origin.Rmd",
+    "project_path" : "01-Origin.Rmd",
+    "properties" : {
+        "cursorPosition" : "19,17",
+        "scrollLine" : "2"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1630706447407.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1110410717",
+    "id" : "9529E0CA",
+    "lastKnownWriteTime" : 1630512535,
+    "last_content_update" : 1630512535,
+    "path" : "~/Documents/House_Prices_Project/07-references.Rmd",
+    "project_path" : "07-references.Rmd",
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

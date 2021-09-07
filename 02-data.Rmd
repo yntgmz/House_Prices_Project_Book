@@ -1,0 +1,46 @@
+---
+title: "Data"
+output:
+  html_document:
+    df_print: paged
+bibliography: [book.bib, packages.bib]
+---
+```{r setup, include=FALSE, eval =TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bookdown)
+library(kableExtra)
+```
+
+# Data 
+The data is the  "Ames Housing Dataset", provided at kaggle.com, which contains information about the sale of individual residential properties in Ames, Iowa from 2006 to 2010. The original dataset was compiled by Dean DeCock for use in data science education, and and is available online here: [Ames Housing Dataset](http://www.amstat.org/publications/jse/v19n3/decock/AmesHousing.xls). 
+
+The data set contains 2919 observations and 80 explanatory variables, plus the variable of interest: Sales Price. Kaggle provided the data split into train and test sets. 
+
+
+```{r RawDataImport, eval =TRUE, collapse = TRUE, comment="***"}
+# Import Train and Tests Datasets
+train_raw<-read.csv("train.csv",stringsAsFactors = TRUE) # 1460 rows,  81 columns
+test_raw<-read.csv("test.csv", stringsAsFactors = TRUE)
+
+#Merge Datasets for preprocessing steps. Separate into train and test sets later for modeling and prediction. 
+test_raw$"SalePrice"<-0                   # Create "SalePrice" feature for test set
+data_full<- rbind(train_raw, test_raw)    # Combine hdb_train and hdb_test
+
+#Save ID column for submissiom
+test_ID <-test_raw$Id
+
+```
+
+
+```{r RawDataSummary, eval =TRUE, collapse = TRUE, echo=FALSE}
+cat("There are", dim(train_raw)[1], "rows and", dim(train_raw)[2], "columns in the Train data-set.\nThere are", dim(test_raw)[1], "rows and", dim(test_raw)[2], "columns in the Test data-set.\nThere are", dim(data_full)[1], "rows and", dim(data_full)[2], "columns in the combined data-set.")
+```
+Table \@ref(tab:RawDataTable1) shows a snippet of the raw data including the first 10 rows and 10 columns plus SalesPrice.
+
+```{r RawDataTable1, eval=TRUE, echo=FALSE}
+raw_data_snip<-kable(data_full[1:10, c(1:10,81)], caption = "Raw Data Snippet", booktabs = TRUE)
+raw_data_snip %>%
+  kable_styling()%>%
+  scroll_box(width = "100%", box_css = "border: 0px;")
+
+```
