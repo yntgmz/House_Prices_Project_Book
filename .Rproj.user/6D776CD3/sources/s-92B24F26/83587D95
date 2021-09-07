@@ -5,13 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1782723477",
+    "hash" : "0",
     "id" : "83587D95",
-    "lastKnownWriteTime" : 1630710148,
-    "last_content_update" : 1630710148,
+    "lastKnownWriteTime" : 1631046519,
+    "last_content_update" : 1631046519,
     "path" : "~/Documents/House_Prices_Project/Lasso_ModelFinal2",
     "project_path" : "Lasso_ModelFinal2",
     "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [

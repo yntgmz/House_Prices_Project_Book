@@ -2,18 +2,18 @@
     "collab_server" : "",
     "contents" : "",
     "created" : 1630706857758.000,
-    "dirty" : true,
+    "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "760413731",
     "id" : "4DF5F066",
-    "lastKnownWriteTime" : 1631042028,
-    "last_content_update" : 1631042408649,
+    "lastKnownWriteTime" : 1631046059,
+    "last_content_update" : 1631046059987,
     "path" : "~/Documents/House_Prices_Project/03-preprocessing.Rmd",
     "project_path" : "03-preprocessing.Rmd",
     "properties" : {
-        "cursorPosition" : "431,53",
-        "scrollLine" : "426"
+        "cursorPosition" : "9,5",
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [

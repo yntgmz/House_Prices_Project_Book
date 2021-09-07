@@ -7,7 +7,7 @@ output:
 bibliography: [book.bib, packages.bib]
 ---
 
-```{r setup, include=FALSE, eval =TRUE}
+```{r, include=FALSE, eval =TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(bookdown)
 library(kableExtra)
@@ -237,7 +237,7 @@ For some of the categorical features only missing a few values, we filled in the
 
 ^[The graphs were produced with ggplot() function from package 'ggplot2' [@ggplot2].]
 
-```{r plotcat, echo=FALSE, eval=TRUE, fig.cap="Categorical Features with Few NAs", fig.align = 'center',}
+```{r plotcat, echo=FALSE, eval=TRUE, fig.cap="Categorical Features with Few NAs", fig.align = 'center'}
 
 ut<-ggplot(data_full)+aes(Utilities)+ labs(title="Utilities")+
 geom_bar(fill="#053061", color="#F5F5F5")+  theme(

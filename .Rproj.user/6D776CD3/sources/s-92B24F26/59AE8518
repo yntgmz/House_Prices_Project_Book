@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "878522800",
+    "hash" : "791303443",
     "id" : "59AE8518",
-    "lastKnownWriteTime" : 1631042034,
-    "last_content_update" : 1631042034183,
+    "lastKnownWriteTime" : 1631046160,
+    "last_content_update" : 1631046160212,
     "path" : "~/Documents/House_Prices_Project/05-Prediction.Rmd",
     "project_path" : "05-Prediction.Rmd",
     "properties" : {
-        "cursorPosition" : "60,15",
-        "scrollLine" : "51"
+        "cursorPosition" : "7,5",
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [

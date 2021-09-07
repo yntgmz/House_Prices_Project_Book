@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "4114794661",
     "id" : "B52AADA8",
-    "lastKnownWriteTime" : 1631044204,
-    "last_content_update" : 1631044204837,
+    "lastKnownWriteTime" : 1631046160,
+    "last_content_update" : 1631046160195,
     "path" : "~/Documents/House_Prices_Project/04-modeling.Rmd",
     "project_path" : "04-modeling.Rmd",
     "properties" : {
-        "cursorPosition" : "427,18",
-        "scrollLine" : "421"
+        "cursorPosition" : "7,5",
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [

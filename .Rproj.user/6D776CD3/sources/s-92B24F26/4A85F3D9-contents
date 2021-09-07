@@ -8,7 +8,7 @@ bibliography: [book.bib, packages.bib]
 
 ---
 
-```{r setup, include=FALSE, eval =TRUE}
+```{r, include=FALSE, eval =TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(DiagrammeR)     #for workflow diagram
 library(webshot)     #for workflow diagram
